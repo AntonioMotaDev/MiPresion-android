@@ -136,6 +136,7 @@ export function mountRegistrar(root) {
       hint.textContent = '';
       document.activeElement?.blur();
       showSaved(reading);
+      document.dispatchEvent(new CustomEvent('lectura-guardada', { detail: reading }));
     } catch (err) {
       console.error(err);
       showError('No se pudo guardar. Intente de nuevo.');

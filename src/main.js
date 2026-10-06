@@ -6,10 +6,14 @@ import './styles.css';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { mountRegistrar } from './ui/registrar.js';
+import { mountHistorial } from './ui/historial.js';
 
 const isNative = Capacitor.isNativePlatform();
 
 const registrar = mountRegistrar(document.getElementById('view-registrar'));
+const historial = mountHistorial(document.getElementById('view-historial'));
+
+document.addEventListener('lectura-guardada', (e) => historial.showWeekOf(e.detail.ts));
 
 /* ---------- pestañas ---------- */
 const tabs = document.querySelectorAll('.tabbar [data-tab]');
@@ -21,6 +25,7 @@ function showTab(name) {
     else t.removeAttribute('aria-current');
   });
   views.forEach((v) => (v.hidden = v.dataset.view !== name));
+  if (name === 'historial') historial.refresh();
   window.scrollTo(0, 0);
 }
 tabs.forEach((t) => t.addEventListener('click', () => showTab(t.dataset.tab)));
