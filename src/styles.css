@@ -1,0 +1,19 @@
+:root {
+  --bg: #F1F3F2; --surface: #FFFFFF; --ink: #1B1C1E; --muted: #6A6F73; --line: #D9DDDB;
+  --pulse: #D42A3C;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, Roboto, sans-serif;
+  font-size: 20px;
+  line-height: 1.45;
+}
+main {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px));
+}
+h1 { color: var(--pulse); }
