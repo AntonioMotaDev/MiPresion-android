@@ -3,6 +3,7 @@ import * as settings from '../settings.js';
 import { REPORT_PERIODS, buildReport, reportFileName } from '../logic/report.js';
 import { createModal } from './modal.js';
 import { toast } from './toast.js';
+import { isShareCancel } from '../share.js';
 
 // Ventana "Imprimir para el doctor": periodo, con o sin notas, y el nombre la primera vez.
 export function createPrintDialog() {
@@ -88,8 +89,7 @@ export function createPrintDialog() {
       modal.close();
       await sharePdf(doc, reportFileName());
     } catch (err) {
-      // Cerrar el menú de compartir sin elegir nada no es un error.
-      if (!/cancel/i.test(String(err?.message ?? err))) {
+      if (!isShareCancel(err)) {
         console.error(err);
         toast('No se pudo crear el PDF. Intente de nuevo.');
       }

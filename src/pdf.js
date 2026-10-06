@@ -1,9 +1,7 @@
 // Hoja para el doctor: PDF blanco y negro, tamaño carta, sin importar el tema de la app.
 import { jsPDF } from 'jspdf';
 import { autoTable } from 'jspdf-autotable';
-import { Capacitor } from '@capacitor/core';
-import { Filesystem, Directory } from '@capacitor/filesystem';
-import { Share } from '@capacitor/share';
+import { shareFile } from './share.js';
 import { formatDateShort, formatDateFull, formatTime24, pdfSafe } from './logic/report.js';
 
 const M = 16; // margen en mm
@@ -94,17 +92,7 @@ export function createReportPdf(report, { name, withNotes }) {
   return doc;
 }
 
-// En Android: guarda en caché y abre el menú de compartir (imprimir, WhatsApp, correo).
-export async function sharePdf(doc, fileName) {
-  if (!Capacitor.isNativePlatform()) {
-    doc.save(fileName); // navegador: descarga directa, para probar
-    return;
-  }
-  const data = doc.output('datauristring').split(',')[1];
-  const { uri } = await Filesystem.writeFile({ path: fileName, data, directory: Directory.Cache });
-  await Share.share({
-    title: 'Registro de presión arterial',
-    files: [uri],
-    dialogTitle: 'Imprimir o enviar',
-  });
+export function sharePdf(doc, fileName) {
+  const base64 = doc.output('datauristring').split(',')[1];
+  return shareFile(fileName, { base64 }, { title: 'Registro de presión arterial', mime: 'application/pdf' });
 }

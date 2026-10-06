@@ -12,4 +12,6 @@ export const icons = {
   moon: svg('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>'),
   auto: svg('<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/>'),
   printer: svg('<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/>'),
+  download: svg('<path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/>'),
+  upload: svg('<path d="M12 20V9M7 13.5l5-5 5 5M5 4h14"/>'),
 };

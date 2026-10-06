@@ -5,6 +5,7 @@
 // Una medición: { id, sys, dia, pul, note, ts, created_at }
 
 import { Capacitor } from '@capacitor/core';
+import { missingReadings } from './logic/backup.js';
 
 const DB_NAME = 'mipresion';
 const LS_KEY = 'mi-presion-lecturas';
@@ -101,8 +102,7 @@ function localBackend() {
     },
     async importMany(readings) {
       const arr = read();
-      const ids = new Set(arr.map((x) => x.id));
-      const fresh = readings.filter((r) => !ids.has(r.id) && ids.add(r.id));
+      const fresh = missingReadings(arr, readings);
       write([...arr, ...fresh]);
       return fresh.length;
     },

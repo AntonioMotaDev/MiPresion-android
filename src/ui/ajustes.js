@@ -2,6 +2,7 @@ import * as settings from '../settings.js';
 import { applyTheme } from '../theme.js';
 import { icons } from './icons.js';
 import { toast } from './toast.js';
+import { mountRespaldo } from './respaldo.js';
 
 const THEME_OPTIONS = [
   { value: 'auto', label: 'Automático', help: 'Igual que el teléfono', icon: icons.auto },
@@ -40,11 +41,14 @@ const TEMPLATE = `
       <button type="submit" class="btn-secondary">Guardar nombre</button>
     </form>
   </section>
+
+  <section class="settings-section" aria-labelledby="s-respaldo" id="respaldo"></section>
 `;
 
 export function mountAjustes(root, { onBack }) {
   root.innerHTML = TEMPLATE;
   const nameInput = root.querySelector('#patientName');
+  mountRespaldo(root.querySelector('#respaldo'));
 
   root.querySelector('[data-act="back"]').addEventListener('click', onBack);
 

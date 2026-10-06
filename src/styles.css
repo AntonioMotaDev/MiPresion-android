@@ -345,6 +345,12 @@ body.kb-open .tabbar { display: none; }
 .b0 { background: var(--b0); } .b1 { background: var(--b1); } .b2 { background: var(--b2); }
 .b3 { background: var(--b3); } .b4 { background: var(--b4); }
 
+/* ---------- respaldo ---------- */
+.backup-actions { display: grid; gap: 12px; }
+.backup-actions .btn-secondary { justify-content: flex-start; padding-left: 18px; }
+.modal-actions.single { grid-template-columns: 1fr; }
+.modal .saved-check { margin-bottom: 4px; }
+
 /* ---------- imprimir ---------- */
 .print-btn { width: 100%; margin-bottom: 16px; min-height: 60px; }
 .print-btn .icon { width: 26px; height: 26px; }
