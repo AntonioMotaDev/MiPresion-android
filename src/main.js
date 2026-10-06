@@ -10,6 +10,7 @@ import { applyCachedTheme, applyTheme } from './theme.js';
 import { mountRegistrar } from './ui/registrar.js';
 import { mountHistorial } from './ui/historial.js';
 import { mountAjustes } from './ui/ajustes.js';
+import { mountResumen } from './ui/resumen.js';
 
 const isNative = Capacitor.isNativePlatform();
 
@@ -20,6 +21,7 @@ settings.getTheme().then(applyTheme);
 const $ = (id) => document.getElementById(id);
 const registrar = mountRegistrar($('view-registrar'));
 const historial = mountHistorial($('view-historial'));
+const resumen = mountResumen($('view-resumen'));
 const ajustes = mountAjustes($('view-ajustes'), { onBack: closeSettings });
 
 document.addEventListener('lectura-guardada', (e) => historial.showWeekOf(e.detail.ts));
@@ -39,6 +41,7 @@ function showView(name) {
   });
   settingsBtn.setAttribute('aria-pressed', String(name === 'ajustes'));
   if (name === 'historial') historial.refresh();
+  if (name === 'resumen') resumen.refresh();
   if (name === 'ajustes') ajustes.refresh();
   window.scrollTo(0, 0);
 }
