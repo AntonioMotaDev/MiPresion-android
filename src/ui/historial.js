@@ -5,18 +5,22 @@ import {
 } from '../logic/dates.js';
 import { createModal } from './modal.js';
 import { toast } from './toast.js';
+import { icons } from './icons.js';
 
 const TEMPLATE = `
-  <div class="weekhead">
-    <h2 id="weekTitle">Esta semana</h2>
-    <p id="weekRange" class="muted"></p>
-  </div>
-  <div class="weeknav">
-    <button type="button" class="btn-secondary" id="prev">‹ Semana anterior</button>
-    <button type="button" class="btn-secondary" id="next">Semana siguiente ›</button>
+  <h2 class="view-title" id="t-historial">Historial</h2>
+  <div class="card">
+    <div class="weekhead">
+      <h3 id="weekTitle">Esta semana</h3>
+      <p id="weekRange"></p>
+    </div>
+    <div class="weeknav">
+      <button type="button" class="btn-secondary" id="prev">${icons.chevronLeft} Anterior</button>
+      <button type="button" class="btn-secondary" id="next">Siguiente ${icons.chevronRight}</button>
+    </div>
   </div>
   <p id="emptyWeek" class="placeholder" hidden></p>
-  <div id="days"></div>
+  <div id="days" class="days"></div>
 `;
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -52,13 +56,22 @@ export function mountHistorial(root) {
 
     const today = new Date();
     daysEl.replaceChildren(...groups.map(({ day, readings }, i) => {
+      const isToday = sameDay(day, today);
       const wrap = document.createElement('section');
-      wrap.className = 'day' + (sameDay(day, today) ? ' today' : '');
-      wrap.innerHTML = `<h3 class="day-name">${DAY_NAMES[i]} <small>${formatDayMonth(day)}${sameDay(day, today) ? ' · Hoy' : ''}</small></h3>`;
-      if (!readings.length) {
-        wrap.insertAdjacentHTML('beforeend', '<p class="day-empty">Sin mediciones</p>');
+      wrap.className = 'day' + (readings.length ? '' : ' is-empty');
+      wrap.innerHTML = `
+        <h3 class="day-head">
+          <span class="day-name">${DAY_NAMES[i]}</span>
+          <span class="day-date">${formatDayMonth(day)}</span>
+          ${isToday ? '<span class="day-today">Hoy</span>' : ''}
+          ${readings.length ? '' : '<span class="day-empty">Sin mediciones</span>'}
+        </h3>`;
+      if (readings.length) {
+        const list = document.createElement('div');
+        list.className = 'card day-list';
+        readings.forEach((r) => list.appendChild(readingButton(r)));
+        wrap.appendChild(list);
       }
-      readings.forEach((r) => wrap.appendChild(readingButton(r)));
       return wrap;
     }));
   }
@@ -71,7 +84,7 @@ export function mountHistorial(root) {
     b.setAttribute('aria-label', `${formatTime(r.ts)}: ${r.sys} sobre ${r.dia}${r.pul ? `, pulso ${r.pul}` : ''}, ${CATEGORIES[c]}. Toque para ver o eliminar.`);
     b.innerHTML = `
       <span class="rr-time">${formatTime(r.ts)}</span>
-      <span class="rr-value">${r.sys}/${r.dia}</span>
+      <span class="rr-value num">${r.sys}/${r.dia}</span>
       <span class="tag c${c}">${CATEGORIES[c]}</span>
       ${r.pul || r.note ? `<span class="rr-extra">${r.pul ? `<span class="pulse-heart">♥</span> ${r.pul}` : ''}${r.pul && r.note ? ' · ' : ''}${esc(r.note)}</span>` : ''}`;
     b.addEventListener('click', () => openDetail(r));
@@ -89,7 +102,7 @@ export function mountHistorial(root) {
   function showDetail(r) {
     const c = classify(r.sys, r.dia);
     modal.el.innerHTML = `
-      <p class="modal-value">${r.sys}/${r.dia}${r.pul ? ` <span class="pulse-heart">♥</span> ${r.pul}` : ''}</p>
+      <p class="modal-value num">${r.sys}/${r.dia}${r.pul ? ` <span class="pulse-heart">♥</span> ${r.pul}` : ''}</p>
       <p><span class="tag c${c}">${CATEGORIES[c]}</span></p>
       <p>${formatDateLong(r.ts)}, ${formatTime(r.ts)}</p>
       ${r.note ? `<p class="modal-note">${esc(r.note)}</p>` : ''}

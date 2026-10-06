@@ -3,33 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
   <title>Mi presión</title>
 </head>
 <body>
   <header class="topbar">
-    <svg width="34" height="32" viewBox="0 0 30 28" aria-hidden="true"><path d="M15 27 3.2 15.3A7.6 7.6 0 0 1 15 4.6a7.6 7.6 0 0 1 11.8 10.7Z" fill="var(--pulse)"/><path d="M5 14h5l2-4 3 8 2.5-6 1.5 2h6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
+    <img class="logo" src="/src/assets/logo.png" alt="" width="40" height="40">
     <h1>Mi presión</h1>
+    <span class="spacer"></span>
+    <button type="button" class="icon-btn" id="settingsBtn" aria-label="Ajustes" aria-pressed="false">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
   </header>
 
   <main>
-    <section id="view-registrar" data-view="registrar" aria-label="Registrar"></section>
-    <section id="view-historial" data-view="historial" aria-label="Historial" hidden></section>
-    <section id="view-resumen" data-view="resumen" aria-label="Resumen" hidden>
-      <p class="placeholder">Aquí verá su resumen. Muy pronto.</p>
+    <section id="view-registrar" data-view="registrar" aria-labelledby="t-registrar"></section>
+    <section id="view-historial" data-view="historial" aria-labelledby="t-historial" hidden></section>
+    <section id="view-resumen" data-view="resumen" aria-labelledby="t-resumen" hidden>
+      <h2 class="view-title" id="t-resumen">Resumen</h2>
+      <p class="card placeholder">Aquí verá su gráfica y sus promedios. Muy pronto.</p>
     </section>
+    <section id="view-ajustes" data-view="ajustes" aria-labelledby="t-ajustes" hidden></section>
   </main>
 
   <nav class="tabbar" aria-label="Secciones">
     <button type="button" data-tab="registrar" aria-current="page">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <span class="pill"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
       Registrar
     </button>
     <button type="button" data-tab="historial">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="pill"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
       Historial
     </button>
     <button type="button" data-tab="resumen">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 15l4-5 3 3 5-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="pill"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M5.5 15.5l4-5 3.5 3 5.5-7"/></svg></span>
       Resumen
     </button>
   </nav>

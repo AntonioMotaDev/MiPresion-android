@@ -8,7 +8,7 @@ App Android (Capacitor) para que un adulto mayor registre su presión arterial e
 Extremadamente sencilla. Si no está en la spec, **no se agrega**: pregúntale a Antonio. Fuera de alcance: nube/Supabase/sync, cuentas, notificaciones, perfiles, analíticas, anuncios, **cualquier llamada de red**, ajustes extra. Sin consejos médicos (solo etiqueta de clasificación y números).
 
 ## Stack (versiones verificadas oct-2026)
-- Capacitor 8 (`@capacitor/core` 8.x) → **JDK 21**. Plugins: `@capacitor-community/sqlite`, `@capacitor/preferences`, `@capacitor/filesystem`, `@capacitor/share`, `@capacitor/status-bar`, `@capacitor/assets` (dev).
+- Capacitor 8 (`@capacitor/core` 8.x) → **JDK 21**. Plugins: `@capacitor-community/sqlite`, `@capacitor/preferences`, `@capacitor/filesystem`, `@capacitor/share`, `@capacitor/assets` (dev). Barras del sistema: `SystemBars` de `@capacitor/core` 8 (reemplaza a `@capacitor/status-bar`; cubre barra de estado y de navegación).
 - Vite + HTML/CSS/JS vanilla (ES modules). **Sin frameworks ni librerías de UI. Nada desde CDN** (ni Google Fonts: fuentes del sistema o empaquetadas).
 - `chart.js` con imports selectivos (tree-shaking). `jspdf` + `jspdf-autotable`. Vitest.
 - `window.print()` no sirve en el WebView: PDF → Filesystem (Cache) → Share.
@@ -42,7 +42,7 @@ Respaldo JSON: `{ "version": 1, "exportado": <ts>, "lecturas": [...] }`, archivo
 
 ## UI / accesibilidad
 Texto base ≥20px, botones ≥56px de alto, alto contraste, la clasificación siempre con texto (nunca solo color). Trato de "usted". Etiquetas "Sistólica (alta)" / "Diastólica (baja)". Barra inferior: Registrar · Historial · Resumen; engrane arriba → Ajustes. Respetar `env(safe-area-inset-*)`. Tema: variables CSS en `:root` + `data-theme` (auto/claro/oscuro); la gráfica relee colores al cambiar; la status bar sigue al tema; el PDF siempre blanco y negro, tamaño carta.
-Paleta y estilos base: copiar variables de `referencia/presion-arterial.html` líneas 12–31 (no leer el resto salvo que haga falta).
+Diseño (hito 4, pedido de Antonio: bonito, elegante, atemporal, minimalista): paleta del ícono — azul marino `--primary #13213D` (oscuro: fondo `#0B1424`), acento rojo del corazón, etiquetas de clasificación suaves `--cN-bg/--cN-fg` (Crisis sólida). Tarjetas `.card` con sombra suave, sin bordes duros. Íconos de línea en `src/ui/icons.js`. Títulos Barlow 600, números Barlow Condensed 700 (`.num`). Todo en tokens de `src/styles.css`; no meter colores sueltos.
 
 ## Comandos
 ```
@@ -67,7 +67,7 @@ Hitos: 1 APK firmado vacío · 2 Registrar + SQLite + 3 pestañas · 3 Historial
 - [x] Hito 1 — Vite+Capacitor 8, `android/` versionado, APK firmado en Actions (run 2 verde). Firma por env (`ANDROID_KEYSTORE_PATH`, ver `android/app/build.gradle`); sin secretos compila sin firmar y falla al final a propósito. Keystore alias `mipresion`, secretos ya cargados. Ojo Gradle: usar `versionCode = ...` (asignación explícita).
 - [x] Hito 2 — Registrar (`src/ui/registrar.js`), `storage.js` (SQLite/localStorage), pestañas en `main.js`, Barlow empaquetada, pruebas de validate/autoadvance. Build #4 verde (APK ~8 MB por SQLite). Pendiente: Antonio confirma en teléfono que el teclado abre solo y que lo guardado sobrevive al cerrar la app.
 - [x] Hito 3 — `src/ui/historial.js` (semana lun–dom, navegación con texto, detalle → confirmar → eliminar), `ui/modal.js` (diálogo que cierra con "atrás" de Android vía `history.pushState`, sin plugin), `ui/toast.js`, helpers de semana en `logic/dates.js` con pruebas. Registrar emite `lectura-guardada` y Historial salta a esa semana. Sin promedio semanal (no está en la spec; va en Resumen). Build #6 verde.
-- [ ] Hito 4 — siguiente: Ajustes (engrane arriba) + tema auto/claro/oscuro + status bar + nombre del paciente.
+- [~] Hito 4 — `src/ui/ajustes.js` (tema + nombre del paciente; Volver/"atrás" vía `history.pushState({view:'ajustes'})` en `main.js`), `settings.js` (Preferences), `theme.js` (data-theme + SystemBars + caché en localStorage para no parpadear; emite `tema-cambiado` para la gráfica del hito 5). Rediseño visual completo. Ícono de Antonio aplicado (adelanto del hito 9): fuentes en `assets/`, regenerar con `python3 scripts/icono.py referencia/icono-original.webp` y `npx capacitor-assets generate --android --assetPath assets --iconBackgroundColor '#0D1B31' --iconBackgroundColorDark '#0D1B31' --splashBackgroundColor '#0D1B31' --splashBackgroundColorDark '#0D1B31'` (después `git checkout android/app/src/main/AndroidManifest.xml`, solo reformatea). Splash azul marino (`windowSplashScreenBackground` en styles.xml). Esperando build verde.
 - Notas técnicas: `@capacitor/keyboard` agregado para abrir el teclado al iniciar (`focus()` solo no lo abre en el WebView) y ocultar la barra inferior al escribir (`body.kb-open`). El README de SQLite sugiere `allowBackup=false`: **ignorarlo** (usamos BD sin cifrar y la spec exige `true`). Sin placeholders numéricos en sys/dia/pul (en oscuro parecían valores capturados). Verificación en navegador: `npx vite preview` + Playwright global (`$(npm root -g)/playwright/index.mjs`).
 - Decisiones: appId `com.antoniomota.mipresion`; fuente Barlow/Barlow Condensed empaquetada con `@fontsource` (aprobado); `src/logic/classify.js` ya existe con pruebas.
 

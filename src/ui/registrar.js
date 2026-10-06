@@ -3,9 +3,11 @@ import { classify, CATEGORIES, CRISIS_MESSAGE } from '../logic/classify.js';
 import { validateReading, NOTE_MAX } from '../logic/validate.js';
 import { isComplete, sanitizeDigits } from '../logic/autoadvance.js';
 import { toLocalInputValue, formatTime, formatDateLong } from '../logic/dates.js';
+import { icons } from './icons.js';
 
 const TEMPLATE = `
-  <div class="saved" id="saved" role="status" hidden></div>
+  <h2 class="view-title" id="t-registrar">Nueva medición</h2>
+  <div class="card saved" id="saved" role="status" hidden></div>
   <form class="card" id="form" novalidate autocomplete="off">
     <div class="reading">
       <div class="field">
@@ -29,13 +31,14 @@ const TEMPLATE = `
       </div>
     </div>
     <div class="when">
-      <span class="when-text" id="whenText">Fecha y hora: ahora</span>
-      <button type="button" class="btn-link" id="whenBtn">Cambiar fecha u hora</button>
+      ${icons.clock}
+      <span class="when-text" id="whenText">Ahora</span>
+      <button type="button" class="btn-link" id="whenBtn">Cambiar</button>
       <input type="datetime-local" id="whenInput" aria-label="Fecha y hora de la medición" hidden>
-      <button type="button" class="btn-link" id="whenNow" hidden>Usar la hora actual</button>
+      <button type="button" class="btn-link" id="whenNow" hidden>Usar la hora de ahora</button>
     </div>
     <p class="hint" id="hint" aria-live="polite"></p>
-    <button type="submit" class="btn-primary" id="save">Guardar</button>
+    <button type="submit" class="btn-primary" id="save">${icons.check} Guardar</button>
   </form>
 `;
 
@@ -60,7 +63,7 @@ export function mountRegistrar(root) {
   function showCategory(s, d) {
     const c = classify(s, d);
     hint.className = 'hint';
-    hint.innerHTML = `<span class="tag c${c}">${CATEGORIES[c]}</span>`;
+    hint.innerHTML = `<span class="hint-label">Clasificación:</span><span class="tag c${c}">${CATEGORIES[c]}</span>`;
     if (c === 4) hint.insertAdjacentHTML('beforeend', `<span class="crisis">${CRISIS_MESSAGE}</span>`);
   }
 
@@ -98,7 +101,7 @@ export function mountRegistrar(root) {
     customWhen = Date.now();
     whenInput.value = toLocalInputValue(customWhen);
     whenInput.max = toLocalInputValue(Date.now());
-    whenText.textContent = 'Fecha y hora:';
+    whenText.textContent = 'Otra fecha u hora:';
     whenBtn.hidden = true;
     whenInput.hidden = false;
     whenNow.hidden = false;
@@ -113,7 +116,7 @@ export function mountRegistrar(root) {
 
   function resetWhen() {
     customWhen = null;
-    whenText.textContent = 'Fecha y hora: ahora';
+    whenText.textContent = 'Ahora';
     whenBtn.hidden = false;
     whenInput.hidden = true;
     whenNow.hidden = true;
@@ -148,11 +151,12 @@ export function mountRegistrar(root) {
   function showSaved(r) {
     const c = classify(r.sys, r.dia);
     saved.innerHTML = `
-      <div class="saved-title">Guardado ✓</div>
-      <div class="saved-values">${r.sys}/${r.dia}${r.pul ? ` <span class="pulse-heart">♥</span> ${r.pul}` : ''}</div>
+      <span class="saved-check">${icons.check}</span>
+      <p class="saved-title">Guardado</p>
+      <p class="saved-values num">${r.sys}/${r.dia}${r.pul ? ` <span class="pulse-heart">♥</span> ${r.pul}` : ''}</p>
       <span class="tag c${c}">${CATEGORIES[c]}</span>
       ${c === 4 ? `<span class="crisis">${CRISIS_MESSAGE}</span>` : ''}
-      <p>${formatDateLong(r.ts)}, ${formatTime(r.ts)}</p>`;
+      <p class="saved-date">${formatDateLong(r.ts)}, ${formatTime(r.ts)}</p>`;
     saved.hidden = false;
     window.scrollTo(0, 0);
   }
