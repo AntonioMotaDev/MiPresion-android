@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F1F3F2">
+<title>Mi presión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1F3F2; --surface:#FFFFFF; --ink:#1B1C1E; --muted:#6A6F73; --line:#D9DDDB;
+  --pulse:#D42A3C; --ok:#2E7D4F; --warn:#C98A00; --hi:#E0662A; --bad:#D42A3C;
+  --field:#F6F7F6;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#131415; --surface:#1D1F21; --ink:#F2F3F2; --muted:#9BA1A5; --line:#2E3134;
+    --pulse:#FF5466; --ok:#4FB07A; --warn:#E8B23A; --hi:#F08A4E; --bad:#FF5466; --field:#25282A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131415; --surface:#1D1F21; --ink:#F2F3F2; --muted:#9BA1A5; --line:#2E3134;
+  --pulse:#FF5466; --ok:#4FB07A; --warn:#E8B23A; --hi:#F08A4E; --bad:#FF5466; --field:#25282A;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+main{max-width:520px;margin:0 auto;padding:16px 16px 48px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--pulse);outline-offset:2px}
+
+header{display:flex;align-items:center;gap:10px;margin:6px 2px 14px}
+header svg{flex:none}
+h1{font-family:var(--display);font-weight:800;font-size:1.7rem;letter-spacing:.01em;margin:0;line-height:1}
+.sync{margin-left:auto;font-size:.8rem;color:var(--muted)}
+
+/* Captura */
+.entry{background:var(--surface);border-radius:20px;padding:18px 16px 16px;border:1px solid var(--line)}
+.reading{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:4px}
+.num label,.pulse label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:4px}
+.num input,.pulse input{
+  width:100%;border:2px solid transparent;background:var(--field);border-radius:14px;
+  font-family:var(--display);font-weight:700;font-size:3.6rem;line-height:1;text-align:center;
+  padding:10px 4px 8px;color:var(--ink);-moz-appearance:textfield;appearance:textfield
+}
+.num input:focus,.pulse input:focus{outline:none;border-color:var(--ink);background:var(--surface)}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.slash{font-family:var(--display);font-weight:500;font-size:3.4rem;color:var(--muted);padding-bottom:10px}
+.row2{display:grid;grid-template-columns:120px 1fr;gap:12px;margin-top:14px;align-items:end}
+.pulse input{font-size:2.2rem;padding:10px 4px 8px}
+.pulse label span{color:var(--pulse)}
+.note label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:4px}
+.note input{width:100%;border:2px solid transparent;background:var(--field);border-radius:14px;padding:14px 12px;font:inherit;color:var(--ink);min-height:56px}
+.note input:focus{outline:none;border-color:var(--ink);background:var(--surface)}
+.when{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.92rem;color:var(--muted);flex-wrap:wrap}
+.when button{background:none;border:0;padding:4px 2px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.when input{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.save{
+  display:block;width:100%;margin-top:16px;border:0;border-radius:16px;background:var(--ink);color:var(--surface);
+  font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:.02em;padding:16px
+}
+.save:disabled{opacity:.35;cursor:default}
+.hint{min-height:1.4em;margin:10px 2px 0;font-size:.9rem}
+
+/* Semana */
+.week{margin-top:26px}
+.weekbar{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+.weekbar h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0;flex:1;text-align:center}
+.iconbtn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center}
+.iconbtn:disabled{opacity:.3;cursor:default}
+.avg{display:flex;justify-content:space-between;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.avg b{font-family:var(--display);font-size:1.6rem;font-weight:700}
+.avg small{color:var(--muted)}
+
+.day{display:grid;grid-template-columns:78px 1fr;border-top:2px solid var(--ink)}
+.day:last-child{border-bottom:2px solid var(--ink)}
+.dname{padding:10px 0;font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.1}
+.dname small{display:block;font-family:var(--body);font-weight:500;font-size:.8rem;color:var(--muted);margin-top:2px}
+.dname.today{color:var(--pulse)}
+.list{min-height:44px}
+.empty{color:var(--muted);font-size:.85rem;padding:12px 0}
+.r{display:grid;grid-template-columns:52px auto 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;
+   background:none;border:0;border-bottom:1px solid var(--line);padding:9px 0;min-height:48px}
+.r:last-child{border-bottom:0}
+.r .t{font-size:.85rem;color:var(--muted)}
+.r .v{font-family:var(--display);font-weight:700;font-size:1.45rem;line-height:1}
+.r .p{font-size:.85rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .p em{font-style:normal;color:var(--ink)}
+.tag{font-size:.72rem;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap;color:#fff}
+.c0{background:var(--ok)}.c1{background:var(--warn)}.c2{background:var(--hi)}.c3,.c4{background:var(--bad)}
+
+.tools{display:flex;gap:10px;margin-top:18px}
+.tools button{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;font-weight:500}
+.legend{margin-top:20px;font-size:.8rem;color:var(--muted)}
+.legend p{margin:6px 0}
+.legend span.tag{margin-right:6px}
+
+/* Hoja de detalle */
+dialog{border:0;border-radius:20px;padding:20px;max-width:360px;width:calc(100% - 32px);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h3{font-family:var(--display);font-size:2.4rem;margin:0 0 4px;line-height:1}
+dialog p{margin:6px 0;color:var(--muted)}
+dialog .acts{display:flex;gap:10px;margin-top:18px}
+dialog .acts button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+dialog .acts .del{background:var(--bad);border-color:var(--bad);color:#fff}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;
+  background:var(--ink);color:var(--surface);padding:12px 18px;border-radius:999px;font-weight:500;transition:.25s;pointer-events:none;max-width:90%}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+@keyframes beat{0%,100%{transform:scale(1)}30%{transform:scale(1.18)}}
+.beat{animation:beat .45s ease-out}
+@media (prefers-reduced-motion:reduce){.beat{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <svg id="heart" width="30" height="28" viewBox="0 0 30 28" aria-hidden="true"><path d="M15 27 3.2 15.3A7.6 7.6 0 0 1 15 4.6a7.6 7.6 0 0 1 11.8 10.7Z" fill="var(--pulse)"/><path d="M5 14h5l2-4 3 8 2.5-6 1.5 2h6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
+    <h1>Mi presión</h1>
+    <span class="sync" id="sync">Cargando…</span>
+  </header>
+
+  <section class="entry" aria-label="Nueva medición">
+    <div class="reading">
+      <div class="num"><label for="sys">Sistólica (alta)</label><input id="sys" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" placeholder="120" enterkeyhint="next"></div>
+      <div class="slash" aria-hidden="true">/</div>
+      <div class="num"><label for="dia">Diastólica (baja)</label><input id="dia" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" placeholder="80" enterkeyhint="next"></div>
+    </div>
+    <div class="row2">
+      <div class="pulse"><label for="pul"><span>♥</span> Pulso</label><input id="pul" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" placeholder="70" enterkeyhint="next"></div>
+      <div class="note"><label for="note">Notas (opcional)</label><input id="note" autocomplete="off" placeholder="Brazo izq., tras café…" enterkeyhint="done"></div>
+    </div>
+    <div class="when">
+      <span id="whenTxt">Ahora</span>
+      <button type="button" id="whenBtn">Cambiar fecha u hora</button>
+      <input type="datetime-local" id="whenInput" hidden>
+    </div>
+    <button class="save" id="save" disabled>Guardar medición</button>
+    <p class="hint" id="hint" aria-live="polite"></p>
+  </section>
+
+  <section class="week" aria-label="Registro semanal">
+    <div class="weekbar">
+      <button class="iconbtn" id="prev" aria-label="Semana anterior"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      <h2 id="weekTitle">Esta semana</h2>
+      <button class="iconbtn" id="next" aria-label="Semana siguiente"><svg width="18" height="18" viewBox="0 0 18 18"><path d="m7 3 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="avg" id="avg"></div>
+    <div id="days"></div>
+    <div class="tools">
+      <button id="exportBtn">Exportar CSV</button>
+    </div>
+    <div class="legend">
+      <p><span class="tag c0">Normal</span>menos de 120 / 80</p>
+      <p><span class="tag c1">Elevada</span>120–129 / menos de 80</p>
+      <p><span class="tag c2">Alta 1</span>130–139 o 80–89</p>
+      <p><span class="tag c3">Alta 2</span>140 o más, o 90 o más</p>
+      <p><span class="tag c4">Crisis</span>más de 180 o más de 120</p>
+      <p>Rangos de referencia de la American Heart Association. No sustituyen la valoración de tu médico.</p>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg">
+  <h3 id="dV"></h3>
+  <p id="dT"></p>
+  <p id="dN"></p>
+  <div class="acts"><button id="dClose">Cerrar</button><button class="del" id="dDel">Eliminar</button></div>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+  const CATS = ["Normal","Elevada","Alta 1","Alta 2","Crisis"];
+  const LS_KEY = "mi-presion-lecturas";
+
+  let readings = [];
+  let weekOffset = 0;
+  let customWhen = null;
+  let store = null;
+  let selected = null;
+
+  /* ---------- clasificación ---------- */
+  function cat(s, d){
+    if (s > 180 || d > 120) return 4;
+    if (s >= 140 || d >= 90) return 3;
+    if (s >= 130 || d >= 80) return 2;
+    if (s >= 120) return 1;
+    return 0;
+  }
+
+  /* ---------- fechas ---------- */
+  const pad = n => String(n).padStart(2,"0");
+  function mondayOf(date){
+    const d = new Date(date); d.setHours(0,0,0,0);
+    const wd = (d.getDay() + 6) % 7; d.setDate(d.getDate() - wd); return d;
+  }
+  const fmtTime = ts => new Date(ts).toLocaleTimeString("es-MX",{hour:"numeric",minute:"2-digit"});
+  const fmtDM = d => `${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
+  const sameDay = (a,b) => a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+  function toLocalInput(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+
+  /* ---------- almacenamiento ---------- */
+  function localStore(){
+    const read = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || "[]"); } catch { return []; } };
+    const write = arr => { try { localStorage.setItem(LS_KEY, JSON.stringify(arr)); } catch {} };
+    let cb = () => {};
+    return {
+      label: "Guardado en este teléfono",
+      subscribe(fn){ cb = fn; fn(read()); },
+      async add(r){ const arr = read(); arr.push({ id: "l" + Date.now().toString(36) + Math.random().toString(36).slice(2,6), ...r }); write(arr); cb(arr); },
+      async remove(id){ const arr = read().filter(x => x.id !== id); write(arr); cb(arr); }
+    };
+  }
+
+  async function cloudStore(){
+    if (!window.claude || typeof window.claude.use !== "function") return null;
+    const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (!db || !user) return null;
+    const uid = await user.id();
+    if (!uid) return null;
+    const col = db.doc("data/users/" + uid + "/registro").collection("lecturas");
+    return {
+      label: "Sincronizado",
+      subscribe(fn){
+        col.onSnapshot(
+          snap => fn(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
+          () => { $("sync").textContent = "Sin conexión al guardado"; }
+        );
+      },
+      async add(r){ await col.add(r); },
+      async remove(id){ await col.doc(id).delete(); }
+    };
+  }
+
+  /* ---------- captura ---------- */
+  const sys = $("sys"), dia = $("dia"), pul = $("pul"), note = $("note");
+  const order = [sys, dia, pul, note];
+
+  function complete(v){ return v.length === 3 || (v.length === 2 && Number(v[0]) >= 3); }
+
+  function validate(){
+    const s = +sys.value, d = +dia.value, p = pul.value ? +pul.value : null;
+    const ok = s >= 50 && s <= 300 && d >= 30 && d <= 200 && (p === null || (p >= 25 && p <= 250));
+    const okForm = ok && s > d;
+    $("save").disabled = !(okForm && store);
+    const hint = $("hint");
+    if (sys.value && dia.value && complete(sys.value) && complete(dia.value)){
+      if (!ok) { hint.textContent = "Revisa los valores: parecen fuera de rango."; hint.style.color = "var(--bad)"; }
+      else if (s <= d) { hint.textContent = "La sistólica debe ser mayor que la diastólica."; hint.style.color = "var(--bad)"; }
+      else {
+        const c = cat(s,d);
+        hint.innerHTML = `<span class="tag c${c}">${CATS[c]}</span>`;
+        if (c === 4) hint.innerHTML += ' <span style="color:var(--bad)">Si tienes síntomas, busca atención médica de inmediato.</span>';
+        hint.style.color = "";
+      }
+    } else { hint.textContent = ""; }
+    return okForm;
+  }
+
+  [sys, dia, pul].forEach((el, i) => {
+    el.addEventListener("input", () => {
+      el.value = el.value.replace(/\D/g,"").slice(0,3);
+      if (complete(el.value)) order[i+1].focus();
+      validate();
+    });
+    el.addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); order[i+1].focus(); } });
+  });
+  note.addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); if (!$("save").disabled) save(); } });
+
+  $("whenBtn").addEventListener("click", () => {
+    const inp = $("whenInput");
+    inp.hidden = false; $("whenBtn").hidden = true; $("whenTxt").textContent = "Fecha y hora:";
+    inp.value = toLocalInput(customWhen || new Date());
+    customWhen = new Date(inp.value);
+    inp.focus();
+  });
+  $("whenInput").addEventListener("change", e => { const d = new Date(e.target.value); if (!isNaN(d)) customWhen = d; });
+
+  function resetWhen(){
+    customWhen = null; $("whenInput").hidden = true; $("whenBtn").hidden = false; $("whenTxt").textContent = "Ahora";
+  }
+
+  async function save(){
+    if (!validate()) return;
+    const ts = (customWhen || new Date()).getTime();
+    const r = { sys: +sys.value, dia: +dia.value, pul: pul.value ? +pul.value : null, note: note.value.trim().slice(0,200), ts };
+    $("save").disabled = true;
+    try {
+      await store.add(r);
+      sys.value = dia.value = pul.value = note.value = "";
+      $("hint").textContent = "";
+      resetWhen();
+      weekOffset = Math.round((mondayOf(ts) - mondayOf(new Date())) / 6048e5);
+      render();
+      const h = $("heart"); h.classList.remove("beat"); void h.getBoundingClientRect(); h.classList.add("beat");
+      toast("Medición guardada");
+    } catch (e) {
+      toast("No se pudo guardar. Intenta de nuevo.");
+      validate();
+    }
+  }
+  $("save").addEventListener("click", save);
+
+  /* ---------- semana ---------- */
+  function render(){
+    const mon = mondayOf(new Date()); mon.setDate(mon.getDate() + weekOffset * 7);
+    const sun = new Date(mon); sun.setDate(sun.getDate() + 6);
+    $("weekTitle").textContent = weekOffset === 0 ? "Esta semana" : `${fmtDM(mon)} al ${fmtDM(sun)}`;
+    $("next").disabled = weekOffset >= 0;
+
+    const end = new Date(sun); end.setHours(23,59,59,999);
+    const inWeek = readings.filter(r => r.ts >= mon.getTime() && r.ts <= end.getTime()).sort((a,b) => a.ts - b.ts);
+
+    const avg = $("avg");
+    if (inWeek.length){
+      const m = k => Math.round(inWeek.reduce((a,r)=>a+r[k],0)/inWeek.length);
+      const withP = inWeek.filter(r => r.pul);
+      const mp = withP.length ? Math.round(withP.reduce((a,r)=>a+r.pul,0)/withP.length) : null;
+      const s = m("sys"), d = m("dia"), c = cat(s,d);
+      avg.innerHTML = `<span><small>Promedio de ${inWeek.length} ${inWeek.length===1?"medición":"mediciones"}</small><br><b>${s}/${d}</b>${mp?` <small>♥ ${mp}</small>`:""}</span><span class="tag c${c}">${CATS[c]}</span>`;
+    } else {
+      avg.innerHTML = `<small>${weekOffset===0 ? "Aún no hay mediciones esta semana. Registra la primera arriba." : "Sin mediciones esta semana."}</small>`;
+    }
+
+    const today = new Date();
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < 7; i++){
+      const day = new Date(mon); day.setDate(mon.getDate() + i);
+      const rows = inWeek.filter(r => sameDay(new Date(r.ts), day));
+      const wrap = document.createElement("div"); wrap.className = "day";
+      const dn = document.createElement("div"); dn.className = "dname" + (sameDay(day,today) ? " today" : "");
+      dn.innerHTML = `${DAYS[i]}<small>${fmtDM(day)}</small>`;
+      const list = document.createElement("div"); list.className = "list";
+      if (!rows.length){ list.innerHTML = '<div class="empty">—</div>'; }
+      rows.forEach(r => {
+        const c = cat(r.sys, r.dia);
+        const b = document.createElement("button"); b.className = "r"; b.type = "button";
+        b.setAttribute("aria-label", `${fmtTime(r.ts)}, ${r.sys} sobre ${r.dia}${r.pul?`, pulso ${r.pul}`:""}`);
+        const p = document.createElement("span"); p.className = "p";
+        if (r.pul) { const em = document.createElement("em"); em.textContent = "♥ " + r.pul; p.appendChild(em); }
+        if (r.note) p.appendChild(document.createTextNode((r.pul ? "  " : "") + r.note));
+        b.innerHTML = `<span class="t">${fmtTime(r.ts)}</span><span class="v">${r.sys}/${r.dia}</span>`;
+        b.appendChild(p);
+        const t = document.createElement("span"); t.className = `tag c${c}`; t.textContent = CATS[c]; b.appendChild(t);
+        b.addEventListener("click", () => openDetail(r));
+        list.appendChild(b);
+      });
+      wrap.append(dn, list); frag.appendChild(wrap);
+    }
+    $("days").replaceChildren(frag);
+  }
+  $("prev").addEventListener("click", () => { weekOffset--; render(); });
+  $("next").addEventListener("click", () => { if (weekOffset < 0){ weekOffset++; render(); } });
+
+  /* ---------- detalle ---------- */
+  const dlg = $("dlg");
+  function openDetail(r){
+    selected = r;
+    $("dV").textContent = `${r.sys}/${r.dia}` + (r.pul ? `  ♥ ${r.pul}` : "");
+    const d = new Date(r.ts);
+    $("dT").textContent = d.toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"}) + ", " + fmtTime(r.ts) + " · " + CATS[cat(r.sys,r.dia)];
+    $("dN").textContent = r.note || "";
+    dlg.showModal();
+  }
+  $("dClose").addEventListener("click", () => dlg.close());
+  $("dDel").addEventListener("click", async () => {
+    if (!selected) return;
+    if ($("dDel").dataset.confirm !== "1"){ $("dDel").dataset.confirm = "1"; $("dDel").textContent = "¿Seguro?"; return; }
+    try { await store.remove(selected.id); toast("Medición eliminada"); } catch { toast("No se pudo eliminar."); }
+    dlg.close();
+  });
+  dlg.addEventListener("close", () => { $("dDel").dataset.confirm = ""; $("dDel").textContent = "Eliminar"; selected = null; });
+
+  /* ---------- exportar ---------- */
+  $("exportBtn").addEventListener("click", async () => {
+    if (!readings.length){ toast("Aún no hay mediciones para exportar."); return; }
+    const rows = [["Fecha","Hora","Sistolica","Diastolica","Pulso","Clasificacion","Notas"]];
+    [...readings].sort((a,b)=>a.ts-b.ts).forEach(r => {
+      const d = new Date(r.ts);
+      rows.push([`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`, `${pad(d.getHours())}:${pad(d.getMinutes())}`, r.sys, r.dia, r.pul ?? "", CATS[cat(r.sys,r.dia)], r.note || ""]);
+    });
+    const csv = "\uFEFF" + rows.map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
+    const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+    if (!dl){ toast("La descarga no está disponible aquí."); return; }
+    try { await dl.save({ filename: `presion-arterial-${new Date().toISOString().slice(0,10)}.csv`, data: csv }); }
+    catch (e) { if (e && e.code === "unavailable") toast("La descarga no está disponible aquí."); }
+  });
+
+  /* ---------- util ---------- */
+  let tt;
+  function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(()=>t.classList.remove("on"), 2200); }
+
+  /* ---------- arranque ---------- */
+  render();
+  (async () => {
+    let s = null;
+    try { s = await cloudStore(); } catch { s = null; }
+    store = s || localStore();
+    $("sync").textContent = store.label;
+    store.subscribe(arr => { readings = arr.filter(r => typeof r.ts === "number"); render(); });
+    validate();
+  })();
+})();
+</script>
+</body>
+</html>

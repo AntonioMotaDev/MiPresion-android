@@ -1,0 +1,25 @@
+node_modules/
+dist/
+.vite/
+coverage/
+
+# Android generado
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/app/src/main/assets/public/
+*.apk
+*.aab
+
+# Firma: NUNCA subir
+*.jks
+*.keystore
+keystore.properties
+*.p12
+
+.DS_Store
+.idea/
+.vscode/
+*.log
+.env*
