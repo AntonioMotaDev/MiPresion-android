@@ -11,6 +11,7 @@ import { mountRegistrar } from './ui/registrar.js';
 import { mountHistorial } from './ui/historial.js';
 import { mountAjustes } from './ui/ajustes.js';
 import { mountResumen } from './ui/resumen.js';
+import { createTutorial } from './ui/tutorial.js';
 
 const isNative = Capacitor.isNativePlatform();
 
@@ -22,7 +23,8 @@ const $ = (id) => document.getElementById(id);
 const registrar = mountRegistrar($('view-registrar'));
 const historial = mountHistorial($('view-historial'));
 const resumen = mountResumen($('view-resumen'));
-const ajustes = mountAjustes($('view-ajustes'), { onBack: closeSettings });
+const tutorial = createTutorial();
+const ajustes = mountAjustes($('view-ajustes'), { onBack: closeSettings, onTutorial: () => tutorial.show() });
 
 document.addEventListener('lectura-guardada', (e) => historial.showWeekOf(e.detail.ts));
 
@@ -88,7 +90,10 @@ if (isNative) {
 }
 
 /* ---------- arranque ---------- */
-// Al abrir, Registrar con el teclado numérico listo.
+// Al abrir: el tutorial si aún no se ha visto; después, Registrar con el teclado numérico listo.
 showView('registrar');
-registrar.focusFirst();
-if (isNative) setTimeout(() => Keyboard.show().catch(() => {}), 300);
+(async () => {
+  if (!(await settings.getTutorialSeen())) await tutorial.show();
+  registrar.focusFirst();
+  if (isNative) setTimeout(() => Keyboard.show().catch(() => {}), 300);
+})();

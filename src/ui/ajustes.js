@@ -43,14 +43,23 @@ const TEMPLATE = `
   </section>
 
   <section class="settings-section" aria-labelledby="s-respaldo" id="respaldo"></section>
+
+  <section class="settings-section" aria-labelledby="s-ayuda">
+    <h3 class="section-title" id="s-ayuda">Ayuda</h3>
+    <p class="section-help">Vuelva a ver cómo se usa la app.</p>
+    <div class="card backup-actions">
+      <button type="button" class="btn-secondary" data-act="tutorial">${icons.help} Ver tutorial</button>
+    </div>
+  </section>
 `;
 
-export function mountAjustes(root, { onBack }) {
+export function mountAjustes(root, { onBack, onTutorial }) {
   root.innerHTML = TEMPLATE;
   const nameInput = root.querySelector('#patientName');
   mountRespaldo(root.querySelector('#respaldo'));
 
   root.querySelector('[data-act="back"]').addEventListener('click', onBack);
+  root.querySelector('[data-act="tutorial"]').addEventListener('click', onTutorial);
 
   root.querySelectorAll('input[name="tema"]').forEach((input) => {
     input.addEventListener('change', async () => {
