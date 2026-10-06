@@ -6,10 +6,36 @@
   <title>Mi presión</title>
 </head>
 <body>
-  <main id="app">
+  <header class="topbar">
+    <svg width="34" height="32" viewBox="0 0 30 28" aria-hidden="true"><path d="M15 27 3.2 15.3A7.6 7.6 0 0 1 15 4.6a7.6 7.6 0 0 1 11.8 10.7Z" fill="var(--pulse)"/><path d="M5 14h5l2-4 3 8 2.5-6 1.5 2h6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
     <h1>Mi presión</h1>
-    <p>Versión de prueba. Pronto podrá registrar su presión aquí.</p>
+  </header>
+
+  <main>
+    <section id="view-registrar" data-view="registrar" aria-label="Registrar"></section>
+    <section id="view-historial" data-view="historial" aria-label="Historial" hidden>
+      <p class="placeholder">Aquí verá sus mediciones. Muy pronto.</p>
+    </section>
+    <section id="view-resumen" data-view="resumen" aria-label="Resumen" hidden>
+      <p class="placeholder">Aquí verá su resumen. Muy pronto.</p>
+    </section>
   </main>
+
+  <nav class="tabbar" aria-label="Secciones">
+    <button type="button" data-tab="registrar" aria-current="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      Registrar
+    </button>
+    <button type="button" data-tab="historial">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 10h16M9 3v4M15 3v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Historial
+    </button>
+    <button type="button" data-tab="resumen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 15l4-5 3 3 5-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Resumen
+    </button>
+  </nav>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
