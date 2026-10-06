@@ -6,9 +6,11 @@ import {
 import { createModal } from './modal.js';
 import { toast } from './toast.js';
 import { icons } from './icons.js';
+import { createPrintDialog } from './imprimir.js';
 
 const TEMPLATE = `
   <h2 class="view-title" id="t-historial">Historial</h2>
+  <button type="button" class="btn-secondary print-btn" id="printBtn">${icons.printer} Imprimir para el doctor</button>
   <div class="card">
     <div class="weekhead">
       <h3 id="weekTitle">Esta semana</h3>
@@ -140,6 +142,9 @@ export function mountHistorial(root) {
     });
     modal.el.querySelector('[data-act="no"]').focus();
   }
+
+  const printDialog = createPrintDialog();
+  $('printBtn').addEventListener('click', printDialog.open);
 
   prev.addEventListener('click', () => { offset--; render(); });
   next.addEventListener('click', () => { if (offset < 0) { offset++; render(); } });

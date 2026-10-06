@@ -106,9 +106,12 @@ Tabla `lecturas`:
 
 ## PDF para el doctor
 
-- Debe parecerse a la hoja original: título "REGISTRO DE TENSIÓN ARTERIAL", campo Nombre y tabla con columnas Fecha, Hora, Sistólica (alta), Diastólica (baja), Pulso, Clasificación, Notas, agrupada por día.
-- El usuario elige el periodo con opciones grandes: "Últimos 7 días", "Últimos 30 días", "Todo". Nada de selectores de fecha complicados.
-- Incluir al final el promedio del periodo y la leyenda de rangos.
+> Ajustado por Antonio (hito 6): título con "PRESIÓN" en lugar de "TENSIÓN", sin columna de clasificación, notas opcionales y al final solo el promedio.
+
+- Título "REGISTRO DE PRESIÓN ARTERIAL", campo Nombre y tabla con columnas Fecha, Hora, Sistólica (alta), Diastólica (baja), Pulso y, si el usuario lo elige, Notas; agrupada por día (la fecha aparece una vez por día).
+- Sin columna de clasificación.
+- El usuario elige el periodo con opciones grandes: "Últimos 7 días", "Últimos 30 días", "Todo", y si se imprime "Con notas" o "Sin notas". Nada de selectores de fecha complicados.
+- Al final solo el promedio del periodo (sin leyenda de rangos).
 - Pensado para imprimirse en blanco y negro en tamaño carta.
 - El nombre del paciente se pide la primera vez que se genera un PDF y se recuerda; también se puede cambiar en Ajustes.
 

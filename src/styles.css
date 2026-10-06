@@ -345,6 +345,18 @@ body.kb-open .tabbar { display: none; }
 .b0 { background: var(--b0); } .b1 { background: var(--b1); } .b2 { background: var(--b2); }
 .b3 { background: var(--b3); } .b4 { background: var(--b4); }
 
+/* ---------- imprimir ---------- */
+.print-btn { width: 100%; margin-bottom: 16px; min-height: 60px; }
+.print-btn .icon { width: 26px; height: 26px; }
+.modal-print { max-height: calc(100vh - 32px); overflow-y: auto; }
+.print-group { border: 0; padding: 0; margin: 18px 0 0; min-width: 0; }
+.print-group legend { padding: 0 2px; margin-bottom: 8px; font-weight: 600; color: var(--ink-2); }
+.choice-list.compact { padding: 4px; background: var(--surface-2); border-radius: var(--radius-sm); }
+.choice-list.compact .choice { min-height: 56px; }
+.choice-list.compact .choice:has(input:checked) { background: var(--surface); box-shadow: var(--shadow); }
+.segmented.two { grid-template-columns: 1fr 1fr; margin-bottom: 0; }
+.btn-primary.inline { margin-top: 0; min-height: 56px; font-size: 1.1rem; }
+
 /* ---------- aviso breve ---------- */
 .toast {
   position: fixed; left: 50%; z-index: 20;
@@ -363,3 +375,4 @@ body.kb-open .tabbar { display: none; }
   .field input.big { font-size: 3.4rem; }
   .row2 { grid-template-columns: 110px 1fr; }
 }
+.modal-print .hint:empty { min-height: 0; margin: 0; }
