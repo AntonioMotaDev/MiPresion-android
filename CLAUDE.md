@@ -64,7 +64,8 @@ Keystore fijo en secretos: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD
 
 ## Estado
 Hitos: 1 APK firmado vacío · 2 Registrar + SQLite + 3 pestañas · 3 Historial + eliminar · 4 Ajustes + tema · 5 Resumen · 6 PDF · 7 Respaldo · 8 Tutorial · 9 Ícono/nombre/accesibilidad.
-- [~] Hito 1 — proyecto Vite+Capacitor 8, `android/` versionado, workflow listo. Firma por env (`ANDROID_KEYSTORE_PATH`, ver `android/app/build.gradle`); sin secretos compila sin firmar y falla al final a propósito. Keystore generado y entregado a Antonio (alias `mipresion`). Falta: Antonio carga los secretos → build verde.
+- [x] Hito 1 — Vite+Capacitor 8, `android/` versionado, APK firmado en Actions (run 2 verde). Firma por env (`ANDROID_KEYSTORE_PATH`, ver `android/app/build.gradle`); sin secretos compila sin firmar y falla al final a propósito. Keystore alias `mipresion`, secretos ya cargados. Ojo Gradle: usar `versionCode = ...` (asignación explícita).
+- [ ] Hito 2 — siguiente: Registrar + SQLite + 3 pestañas + fuente Barlow.
 - Decisiones: appId `com.antoniomota.mipresion`; fuente Barlow/Barlow Condensed empaquetada con `@fontsource` (aprobado); `src/logic/classify.js` ya existe con pruebas.
 
-Pendientes de Antonio: subir `referencia/hoja.jpeg` (foto de la hoja original); cargar los 4 secretos de firma en GitHub.
+Pendientes de Antonio: subir `referencia/hoja.jpeg` (foto de la hoja original, necesaria para el hito 6).
